@@ -7,11 +7,45 @@
     body { margin: 0; overflow: hidden; }
 
     canvas {}
+
+    #legend {
+      font-family: Arial;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      z-index: 100;
+      color: #EEEEEE;
+    }
+
+    #color {
+      width: 32px;
+      height: 32px;
+    }
   </style>
 </head>
 <body>
   <div id="webgl-container">
     <canvas id="stage"></canvas>
+  </div>
+
+  <div id="legend">
+    <h3>Legend</h3>
+    <br>
+    Custer <div id="color" style="background-color: #FC26BF; color: #FC26BF;">c</div>
+    <br>
+    Custer's Units <div id="color" style="background-color: #FF0000; color: #FF0000;">c</div>
+    <br>
+    Reno's Units <div id="color" style="background-color: #EEEEEE; color: #EEEEEE;">c</div>
+    <br>
+    Benteen's Units <div id="color" style="background-color: #E67E22; color: #E67E22;">c</div>
+    <br>
+    Crazy Horse <div id="color" style="background-color: #3B5998; color: #3B5998;">c</div>
+    <br>
+    Packtrain <div id="color" style="background-color: #008CDD; color: #008CDD;">c</div>
+    <br>
+    Gall <div id="color" style="background-color: #7FEAFD; color: #7FEAFD;">c</div>
+    <br>
+    Native Units <div id="color" style="background-color: #0002FE; color: #0002FE;">c</div>
   </div>
 
   <script src="lib/Tween.js"></script>

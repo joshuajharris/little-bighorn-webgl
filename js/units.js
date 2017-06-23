@@ -56,10 +56,9 @@ function createUnitMesh(name, color) {
   var material = new THREE.MeshBasicMaterial( {color: color, side: THREE.DoubleSide} );
   var plane = new THREE.Mesh( geometry, material );
   plane.name = name;
-
+  
   return plane;
 
-  //plane.position.set(x, y, -1000);
   //units.push( plane );
   //console.log('drew at ' + x + ', ' + y );
 }
@@ -153,7 +152,7 @@ function getUnitsData(txtFile, callback) {
 
 function createUnits() {
   // CUSTER'S COMMAND
-  addUnit('custer', 0xFF0000)
+  addUnit('custer', 0xFC26BF)
   addUnit('F', 0xFF0000)
   addUnit('C', 0xFF0000)
   addUnit('E', 0xFF0000)
@@ -179,7 +178,7 @@ function createUnits() {
 
 function unitAppears(index) {
   console.log(`Unit ${index} will appeared`);
-  units[index].mesh.position.z = -1000;
+  //units[index].mesh.position.z = -1000;
 }
 
 function unitDisappear(index) {
@@ -227,6 +226,7 @@ function addUnits(unitsData) {
   //createUnits();
 
   units.forEach(function(unit) {
+    unit.mesh.position.z = 1000;
     scene.add(unit.mesh);
   });
 }
