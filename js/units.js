@@ -138,7 +138,7 @@ function readTextFile(file, callback) {
   rawFile.send(null);
 }
 
-function getUnitsData(txtFile) {
+function getUnitsData(txtFile, callback) {
   readTextFile(txtFile, function(rawData) {
     frames = parseRawData(rawData);
 
@@ -146,6 +146,8 @@ function getUnitsData(txtFile) {
       rawData: rawData,
       frames: frames
     });
+
+    callback();
   });
 }
 

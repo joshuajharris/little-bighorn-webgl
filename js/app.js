@@ -66,8 +66,6 @@ function initScene() {
   camera.name = "camera";
   scene.add(camera);
 
-  //camera.rotation.x -= Math.PI / 6;
-
   renderer = new THREE.WebGLRenderer({
     canvas: myCanvas,
     antialias: true
@@ -98,7 +96,9 @@ function addObjects() {
     //console.log({font: that.font});
     createUnits();
     addUnits();
-    getUnitsData('assets/movement.data');
+    getUnitsData('assets/movement.data', function() {
+      updateUnits(0);
+    });
 
     console.log({units: units});
   //});
