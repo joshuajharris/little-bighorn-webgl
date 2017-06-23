@@ -13,6 +13,16 @@ var myCanvas = document.getElementById('stage');
 
 var actions;
 
+var clock = THREE.Clock();
+
+var isPlay = false;
+
+var currFrame = 1;
+
+var font;
+
+var gui;
+
 /* ######### INIT ######### */
 
 function init() {
@@ -30,22 +40,30 @@ function init() {
 
   // Add OrbitControls so that we can pan around with the mouse.
   //controls = new THREE.OrbitControls(camera, renderer.domElement);
+  //gridHelper();
 
   // Create GUI
   initGUI();
 
-  // Initialize Animations
-  actions = []
-
   window.addEventListener('resize', resize, false);
+}
+
+function gridHelper() {
+  var size = 100;
+  var divisions = 10;
+
+  var gridHelper = new THREE.GridHelper( size, divisions );
+  scene.add( gridHelper );
 }
 
 /* ######### SCENE ######### */
 function initScene() {
   scene = new THREE.Scene();
 
-  camera = new THREE.PerspectiveCamera(FOV , ASPECT_RATIO , 0.1, 20000);
+  //camera = new THREE.PerspectiveCamera(FOV , ASPECT_RATIO , 0.1, 20000);
+  camera = new THREE.OrthographicCamera( WIDTH / - 2, WIDTH / 2, HEIGHT / 2, HEIGHT / - 2, 0.1, 20000 );
   camera.position.set(0,0,0);
+  camera.name = "camera";
   scene.add(camera);
 
   //camera.rotation.x -= Math.PI / 6;
@@ -63,16 +81,27 @@ function initScene() {
 function initLights() {
   // lights
   var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  ambientLight.name = "ambientLight";
   scene.add(ambientLight);
 
   var pointLight = new THREE.PointLight(0xffffff, 0.5);
+  pointLight.name = "pointLight";
   scene.add(pointLight);
 }
 
 /* ######### OBJECTS ######### */
 function addObjects() {
+  //var that = this;
   // Unit Data
-  getUnitsData('assets/movement.data', addUnits);
+  //initFont(function(font) {
+    //that.font = font;
+    //console.log({font: that.font});
+    createUnits();
+    addUnits();
+    getUnitsData('assets/movement.data');
+
+    console.log({units: units});
+  //});
 }
 
 /* ######### WINDOW EVENTS ######### */
@@ -86,7 +115,25 @@ function resize() {
 
 /* ######### ANIMATE ######### */
 function animate() {
-  requestAnimationFrame(animate);
+  setTimeout( function() {
+    if (isPlay && currFrame < 31) {
+      TWEEN.update();
+      console.log(`currFrame: ${currFrame}`);
+
+      console.log(`frame: ${currFrame}`);
+
+      updateUnits(currFrame);
+
+      if (currFrame == 31) {
+        isPlay = false;
+      } else {
+        currFrame++;
+      }
+      setFrameSlider();
+    }
+
+    requestAnimationFrame( animate );
+    }, 1000 / 2 );
 
   //controls.update();
 
@@ -94,38 +141,45 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-function pause() {
-  console.log("I'm Pausing");
-}
-
 var FizzyText = function() {
-  this.pause = function() { pause(); };
   this.frame = 0;
 
   this.play = function() {
     console.log("I'm Playing");
+    currFrame = this.frame;
 
-    var frame = this.frame;
-    console.log(frame);
+    if (currFrame === 31) {
+      currFrame = 0;
+    }
+    isPlay = true;
+  };
 
-    // print the selected frame for each unit
-    frames.forEach(function(unit) {
-      if (unit[frame].type === UNIT_MOVE_TO) {
-        createUnit(0xFF0000, unit[frame].x - (1150 / 2), unit[frame].y - (900 / 2));
-      }
-    });
-
-    addUnits();
+  this.pause= function() {
+    console.log("I'm Pausing");
+    isPlay = false;
   };
 };
 
-
 function initGUI() {
   var text = new FizzyText();
-  var gui = new dat.GUI();
+  gui = new dat.GUI();
   gui.add(text, 'play');
   gui.add(text, 'pause');
-  gui.add(text, 'frame', 0, 32).step(1);
+  var sliderController = gui.add(text, 'frame', 0, 32).step(1);
+
+  sliderController.onFinishChange(function(value) {
+  // Fires when a controller loses focus.
+    console.log("frame: " + value);
+    updateUnits(value);
+});
+}
+
+function setFrameSlider() {
+  for(var i = 0; i<gui.__controllers.length;i++) {
+    if( !gui.__controllers.property === 'frame' ) {
+      gui.__controllers[i].setValue(currFrame);
+    }
+  }
 }
 
 // WEBGL CHECK
